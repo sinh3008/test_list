@@ -1,16 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_list/model/item_model.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final List<int> _items = List<int>.generate(50, (int index) => index);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +26,22 @@ class ReorderableExample extends StatefulWidget {
 }
 
 class _ReorderableListViewExampleState extends State<ReorderableExample> {
-  final List<int> _items = List<int>.generate(10, (int index) => index);
+  final List<ItemModel> listItems = [
+    ItemModel('Danh mục yêu thích', true),
+    ItemModel('Danh mục yêu thích', true),
+    ItemModel('Danh mục yêu thích', true),
+    ItemModel('Danh mục yêu thích', false),
+    ItemModel('Danh mục yêu thích', false),
+    ItemModel('Danh mục yêu thích', false),
+    ItemModel('Danh mục yêu thích', false),
+    ItemModel('Danh mục yêu thích', false),
+    ItemModel('Danh mục yêu thích', false),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,25 +61,38 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
       proxyDecorator: proxyDecorator,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       children: <Widget>[
-        for (int index = 0; index < _items.length; index += 1)
-          Container(
+        for (int index = 0; index < listItems.length; index += 1)
+          GestureDetector(
             key: Key('$index'),
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: Colors.green,
-                width: 1,
+            onTap: () {
+              listItems[index].isActive = !listItems[index].isActive;
+              setState(() {});
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.symmetric(vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                border: listItems[index].isActive
+                    ? Border.all(
+                        color: Colors.green,
+                        width: 1,
+                      )
+                    : Border.all(color: Colors.transparent),
               ),
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(Icons.drag_indicator),
-                Text("Chỉ số thị trường"),
-                Icon(Icons.check_circle),
-              ],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Icon(Icons.drag_indicator),
+                  Text("${listItems[index].name} $index"),
+                  listItems[index].isActive
+                      ? const Icon(Icons.check_circle)
+                      : const Icon(
+                          Icons.check_circle,
+                          color: Colors.transparent,
+                        ),
+                ],
+              ),
             ),
           )
       ],
@@ -78,8 +101,8 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
           if (oldIndex < newIndex) {
             newIndex -= 1;
           }
-          final int item = _items.removeAt(oldIndex);
-          _items.insert(newIndex, item);
+          final ItemModel item = listItems.removeAt(oldIndex);
+          listItems.insert(newIndex, item);
         });
       },
     );
@@ -96,7 +119,7 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(Icons.drag_indicator),
+          Icon(Icons.drag_indicator, color: Colors.white38,),
           Text(
             "Chỉ số thị trường",
             style: TextStyle(color: Colors.lightGreen),

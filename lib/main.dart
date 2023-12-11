@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_list/screen/home_screen.dart';
 
-import 'consts/consts.dart';
+import 'consts/sizes.dart';
 
 void main() {
   runApp(const MyApp());
