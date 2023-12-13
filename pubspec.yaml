@@ -41,6 +41,8 @@ dependencies:
   hive: ^2.2.3
   flutter_bloc: ^8.1.3
   font_awesome_flutter: ^10.6.0
+  flutter_draggable_gridview: ^0.0.9
+  drag_and_drop_lists: ^0.3.3
 
 dev_dependencies:
   flutter_test:

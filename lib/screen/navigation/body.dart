@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:test_list/screen/favorite_shortcuts/favorite_shortcuts_screen.dart';
 
 import '../../consts/const.dart';
 import '../../consts/sizes.dart';
+
 class Body extends StatefulWidget {
   const Body({super.key});
 
@@ -29,7 +31,13 @@ class _BodyState extends State<Body> {
               title: 'Lối tắt ưa thích',
               content: 'Tuỳ chỉnh lối tắt ưa thích để truy cập'
                   ' các tính năng ưa thích ngay tại trang chủ',
-              onPress: () {}),
+              onPress: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const FavoriteShortcutsScreen(),
+                  ),
+                );
+              }),
           const SizedBox(
             height: 30,
           ),
