@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:test_list/model/item_model.dart';
 import 'package:test_list/screen/home_screen.dart';
 
 import 'blocs/item_bloc.dart';
+import 'consts/const.dart';
 import 'consts/sizes.dart';
 
 void main() {
@@ -78,7 +78,7 @@ class _AppState extends State<App> {
                                   borderRadius: BorderRadius.circular(15),
                                   border: listItems[index].isActive
                                       ? Border.all(
-                                          color: Colors.green,
+                                          color: kInputFieldSuccessColor,
                                           width: 1,
                                         )
                                       : Border.all(color: Colors.transparent),
@@ -87,14 +87,15 @@ class _AppState extends State<App> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Icon(Icons.drag_indicator),
+                                    Icon(
+                                      Icons.drag_indicator,
+                                      color: kIconButtonDefault,
+                                    ),
                                     Text("${listItems[index].name} "),
-                                    listItems[index].isActive
-                                        ? const Icon(Icons.check_circle)
-                                        : const Icon(
-                                            Icons.check_circle,
-                                            color: Colors.transparent,
-                                          ),
+                                    Icon(
+                                      Icons.check_circle,
+                                      color: kButtonBgDefault,
+                                    )
                                   ],
                                 ),
                               )

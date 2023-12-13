@@ -160,7 +160,13 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
       return AnimatedBuilder(
         animation: animation,
         builder: (BuildContext context, Widget? child) {
-          return buildContainer(index, kHoverButton);
+          return buildContainer(
+            index: index,
+            color: kHoverButton,
+            icon1: Colors.transparent,
+            icon2: Colors.transparent,
+            textColor: kTextInFieldColor.withOpacity(0.3),
+          );
         },
         child: child,
       );
@@ -203,7 +209,12 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
                                   setState(() {});
                                   saveListToSharedPreferences(listItems);
                                 },
-                                child: buildContainer(index, kSurface02),
+                                child: buildContainer(
+                                    index: index,
+                                    color: kSurface02,
+                                    icon1: kIconButtonDefault,
+                                    icon2: kButtonBgDefault,
+                                    textColor: kTextInFieldColor),
                               )
                           ],
                           onReorder: (int oldIndex, int newIndex) {
@@ -226,7 +237,12 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
     );
   }
 
-  Container buildContainer(int index, Color color) {
+  Container buildContainer(
+      {required int index,
+      required Color color,
+      required Color icon1,
+      required Color icon2,
+      required Color textColor}) {
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.symmetric(vertical: 6),
@@ -246,16 +262,18 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
         children: [
           Icon(
             Icons.drag_indicator,
-            color: kIconButtonDefault,
+            color: icon1,
+            // color: kIconButtonDefault,
           ),
           Text(
             "${listItems[index].name} ",
-            style: TextStyle(color: kTextInFieldColor),
+            style: TextStyle(color: textColor),
           ),
           listItems[index].isActive
               ? Icon(
                   Icons.check_circle,
-                  color: kButtonBgDefault,
+                  color: icon2,
+                  // color: kButtonBgDefault,
                 )
               : const Icon(
                   Icons.check_circle,
@@ -265,36 +283,4 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
       ),
     );
   }
-
-// Container itemList(Key? key) {
-//   return Container(
-//     padding: const EdgeInsets.all(10),
-//     margin: const EdgeInsets.symmetric(vertical: 5),
-//     decoration: BoxDecoration(
-//         color: kHoverButton,
-//         borderRadius: BorderRadius.circular(15),
-//         border: Border.all(
-//           color: kInputFieldSuccessColor,
-//           width: 1,
-//         )),
-//     child: const Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Icon(
-//           Icons.drag_indicator,
-//           color: Colors.transparent,
-//         ),
-//         Text(
-//           "${listItems}",
-//           style: TextStyle(color: Colors.lightGreen),
-//           textAlign: TextAlign.center,
-//         ),
-//         Icon(
-//           Icons.check_circle,
-//           color: Colors.transparent,
-//         ),
-//       ],
-//     ),
-//   );
-// }
 }
