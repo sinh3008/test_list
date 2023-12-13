@@ -1,10 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:test_list/screen/home_screen.dart';
+import 'package:test_list/consts/const.dart';
+import 'package:test_list/screen/interface/interface_screen.dart';
 
 import 'blocs/item_bloc.dart';
-import 'consts/const.dart';
-import 'consts/sizes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,94 +19,11 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        theme: ThemeData(
-          useMaterial3: true,
+        theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: kSurface01,
+          appBarTheme: AppBarTheme(color: kSurface01),
         ),
-        home: const App(),
-      ),
-    );
-  }
-}
-
-class App extends StatefulWidget {
-  const App({super.key});
-
-  @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  @override
-  Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('App'),
-      ),
-      body: SizedBox(
-        width: SizeConfig.screenWidth,
-        height: SizeConfig.screenHeight,
-        child: Column(
-          children: [
-            TextButton(
-              child: const Text("Flutter"),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const HomeScreen(),
-                  ),
-                );
-              },
-            ),
-            Container(
-              color: Colors.white12,
-              height: SizeConfig.screenHeight * 0.6,
-              child: BlocBuilder<ItemBloc, ItemState>(
-                builder: (context, state) {
-                  return state.when(
-                    initial: () => Container(),
-                    loading: () => const CircularProgressIndicator(),
-                    loaded: (list) => ListView.builder(
-                      itemCount: list.length,
-                      itemBuilder: (context, index) {
-                        return list[index].isActive == true
-                            ? Container(
-                                padding: const EdgeInsets.all(10),
-                                margin: const EdgeInsets.symmetric(vertical: 5),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: listItems[index].isActive
-                                      ? Border.all(
-                                          color: kInputFieldSuccessColor,
-                                          width: 1,
-                                        )
-                                      : Border.all(color: Colors.transparent),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Icon(
-                                      Icons.drag_indicator,
-                                      color: kIconButtonDefault,
-                                    ),
-                                    Text("${listItems[index].name} "),
-                                    Icon(
-                                      Icons.check_circle,
-                                      color: kButtonBgDefault,
-                                    )
-                                  ],
-                                ),
-                              )
-                            : Container();
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+        home: const InterfaceScreen(),
       ),
     );
   }
