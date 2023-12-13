@@ -13,12 +13,9 @@ class InterfaceScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Giao diện',
-          style: TextStyle(fontSize: 30),
         ),
-        centerTitle: true,
       ),
       body: const Body(),
     );
   }
 }
-

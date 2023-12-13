@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_list/blocs/item_bloc.dart';
 import 'package:test_list/model/item_model.dart';
-import 'package:test_list/screen/item_content/body.dart';
+import 'body.dart';
 
 import '../../consts/const.dart';
 
@@ -79,11 +79,9 @@ class ItemContentScreen extends StatelessWidget {
                 }
               },
             ),
-            title: Text(
+            title: const Text(
               "Nội dung trang chủ",
-              style: TextStyle(color: kTitleSectionHeader, fontSize: 30),
             ),
-            centerTitle: true,
           ),
           body: const Body()),
     );

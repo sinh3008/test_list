@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:test_list/screen/navigation/navigation_screen.dart';
 
 import '../../consts/const.dart';
 import '../../consts/sizes.dart';
@@ -56,11 +57,11 @@ class _BodyState extends State<Body> {
             text: 'Điều hướng ứng dụng',
             iconLate: Icons.navigate_next,
             onPress: () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) =>  N(),
-              //   ),
-              // );
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const NavigationScreen(),
+                ),
+              );
             },
           ),
           contentItem(
@@ -101,7 +102,7 @@ class _BodyState extends State<Body> {
             Expanded(
               child: Padding(
                 padding:
-                const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 10.0),
+                    const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 10.0),
                 child: Text(
                   text,
                   textAlign: TextAlign.start,

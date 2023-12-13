@@ -21,7 +21,11 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: kSurface01,
-          appBarTheme: AppBarTheme(color: kSurface01),
+          appBarTheme: AppBarTheme(
+              color: kSurface01,
+              titleTextStyle:
+                  TextStyle(fontSize: 26, color: kTitleSectionHeader),
+              centerTitle: true),
         ),
         home: const InterfaceScreen(),
       ),

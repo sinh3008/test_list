@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'body.dart';
 
 class NavigationScreen extends StatelessWidget {
   const NavigationScreen({super.key});
@@ -6,7 +7,11 @@ class NavigationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(title: Text('Điều hướng ứng dụng'),),
+      appBar: AppBar(
+        title: const Text('Điều hướng ứng dụng'),
+      ),
+      body: const Body(),
     );
   }
 }
+
