@@ -11,6 +11,8 @@ import 'package:test_list/repo/items.dart';
 
 import '../consts/const.dart';
 
+List<ItemModel> listItems = [];
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -100,8 +102,6 @@ class ReorderableExample extends StatefulWidget {
   State<ReorderableExample> createState() => _ReorderableListViewExampleState();
 }
 
-List<ItemModel> listItems = [];
-
 class _ReorderableListViewExampleState extends State<ReorderableExample> {
   late SharedPreferences prefs;
   late SharedPreferences sharedPreferences;
@@ -109,44 +109,9 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
   @override
   void initState() {
     super.initState();
-    loadListFromSharedPreferences2();
+    context.read<ItemBloc>().add(ItemEvent.started(listItems));
+    loadListFromSharedPreferences();
   }
-
-  Future<List<ItemModel>> loadListFromSharedPreferences2() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    final String? jsonString = sharedPreferences.getString(item_list);
-    if (jsonString != null) {
-      final List jsonDecoded = jsonDecode(jsonString) as List;
-      listItems = jsonDecoded.map((e) => ItemModel.fromJson(e)).toList();
-      listItems.sort((a, b) => a.isActive == b.isActive
-          ? 0
-          : a.isActive
-          ? -1
-          : 1);
-      return listItems;
-    } else {
-      return listItems = [
-        ItemModel(name: 'Danh mục yêu thích', isActive: true),
-        ItemModel(name: 'Tin tức sự kiện', isActive: true),
-        ItemModel(name: 'Bản đồ nhiệt', isActive: true),
-        ItemModel(name: 'Chỉ số thị trường', isActive: false),
-        ItemModel(name: 'Tài sản', isActive: false),
-        ItemModel(name: 'Nhóm cổ phiếu', isActive: false),
-        ItemModel(name: 'Khuyến nghị đầu tư', isActive: false),
-        ItemModel(name: 'Danh sách sở hữu', isActive: false),
-        ItemModel(name: 'Hiệu quả đầu tư', isActive: false),
-        ItemModel(name: 'Cổ phiếu đột biến', isActive: false),
-        ItemModel(name: 'Sợ hãi & Tham lam', isActive: false),
-        ItemModel(name: 'Nhóm cổ phiếu 1', isActive: false),
-        ItemModel(name: 'Khuyến nghị đầu tư 1', isActive: false),
-        ItemModel(name: 'Danh sách sở hữu 1', isActive: false),
-        ItemModel(name: 'Hiệu quả đầu tư 1', isActive: false),
-        ItemModel(name: 'Cổ phiếu đột biến 1', isActive: false),
-        ItemModel(name: 'Sợ hãi & Tham lam 1', isActive: false),
-      ];
-    }
-  }
-
 
   Future<List<ItemModel>> loadListFromSharedPreferences() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -157,8 +122,8 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
       listItems.sort((a, b) => a.isActive == b.isActive
           ? 0
           : a.isActive
-          ? -1
-          : 1);
+              ? -1
+              : 1);
       return listItems;
     } else {
       return listItems = [
@@ -195,7 +160,7 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
       return AnimatedBuilder(
         animation: animation,
         builder: (BuildContext context, Widget? child) {
-          return itemList(null);
+          return buildContainer(index, kHoverButton);
         },
         child: child,
       );
@@ -215,112 +180,121 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
               style: TextStyle(color: kTitleSectionHeader),
             ),
           ),
-          SizedBox(
-            height: SizeConfig.screenHeight * 0.8,
-            child: FutureBuilder(
-              future: loadListFromSharedPreferences(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  var listItems = snapshot.data!;
-                  return ReorderableListView(
-                    buildDefaultDragHandles: true,
-                    proxyDecorator: proxyDecorator,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    children: <Widget>[
-                      for (int index = 0; index < listItems.length; index += 1)
-                        GestureDetector(
-                          key: Key('$index'),
-                          onTap: () {
-                            listItems[index] = listItems[index]
-                                .copyWith(isActive: !listItems[index].isActive);
-                            setState(() {});
+          BlocBuilder<ItemBloc, ItemState>(
+            builder: (context, state) {
+              return state.when(
+                  initial: () => Container(),
+                  loading: () => const CircularProgressIndicator(),
+                  loaded: (lis) => SizedBox(
+                        height: SizeConfig.screenHeight * 0.8,
+                        child: ReorderableListView(
+                          buildDefaultDragHandles: true,
+                          proxyDecorator: proxyDecorator,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          children: <Widget>[
+                            for (int index = 0;
+                                index < listItems.length;
+                                index += 1)
+                              GestureDetector(
+                                key: Key('$index'),
+                                onTap: () {
+                                  listItems[index] = listItems[index].copyWith(
+                                      isActive: !listItems[index].isActive);
+                                  setState(() {});
+                                  saveListToSharedPreferences(listItems);
+                                },
+                                child: buildContainer(index, kSurface02),
+                              )
+                          ],
+                          onReorder: (int oldIndex, int newIndex) {
+                            setState(() {
+                              if (oldIndex < newIndex) {
+                                newIndex -= 1;
+                              }
+                              final ItemModel item =
+                                  listItems.removeAt(oldIndex);
+                              listItems.insert(newIndex, item);
+                            });
                             saveListToSharedPreferences(listItems);
                           },
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            margin: const EdgeInsets.symmetric(vertical: 6),
-                            decoration: BoxDecoration(
-                              color: kSurface02,
-                              borderRadius: BorderRadius.circular(15),
-                              border: listItems[index].isActive
-                                  ? Border.all(
-                                color: kInputFieldSuccessColor,
-                                width: 1,
-                              )
-                                  : Border.all(color: Colors.transparent),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(
-                                  Icons.drag_indicator,
-                                  color: kIconButtonDefault,
-                                ),
-                                Text(
-                                  "${listItems[index].name} ",
-                                  style: TextStyle(color: kTextInFieldColor),
-                                ),
-                                listItems[index].isActive
-                                    ? Icon(
-                                  Icons.check_circle,
-                                  color: kButtonBgDefault,
-                                )
-                                    : const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.transparent,
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                    ],
-                    onReorder: (int oldIndex, int newIndex) {
-                      setState(() {
-                        if (oldIndex < newIndex) {
-                          newIndex -= 1;
-                        }
-                        final ItemModel item = listItems.removeAt(oldIndex);
-                        listItems.insert(newIndex, item);
-                      });
-                      saveListToSharedPreferences(listItems);
-                    },
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
-            ),
+                        ),
+                      ));
+            },
           ),
         ],
       ),
     );
   }
 
-  Container itemList(Key? key) {
+  Container buildContainer(int index, Color color) {
     return Container(
       padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.green,
+        // color: kSurface02,
+        color: color,
         borderRadius: BorderRadius.circular(15),
+        border: listItems[index].isActive
+            ? Border.all(
+                color: kInputFieldSuccessColor,
+                width: 1,
+              )
+            : Border.all(color: Colors.transparent),
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Icon(
             Icons.drag_indicator,
-            color: Colors.transparent,
+            color: kIconButtonDefault,
           ),
           Text(
-            "Chỉ số thị trường",
-            style: TextStyle(color: Colors.lightGreen),
-            textAlign: TextAlign.center,
+            "${listItems[index].name} ",
+            style: TextStyle(color: kTextInFieldColor),
           ),
-          Icon(
-            Icons.check_circle,
-            color: Colors.transparent,
-          ),
+          listItems[index].isActive
+              ? Icon(
+                  Icons.check_circle,
+                  color: kButtonBgDefault,
+                )
+              : const Icon(
+                  Icons.check_circle,
+                  color: Colors.transparent,
+                ),
         ],
       ),
     );
   }
+
+// Container itemList(Key? key) {
+//   return Container(
+//     padding: const EdgeInsets.all(10),
+//     margin: const EdgeInsets.symmetric(vertical: 5),
+//     decoration: BoxDecoration(
+//         color: kHoverButton,
+//         borderRadius: BorderRadius.circular(15),
+//         border: Border.all(
+//           color: kInputFieldSuccessColor,
+//           width: 1,
+//         )),
+//     child: const Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         Icon(
+//           Icons.drag_indicator,
+//           color: Colors.transparent,
+//         ),
+//         Text(
+//           "${listItems}",
+//           style: TextStyle(color: Colors.lightGreen),
+//           textAlign: TextAlign.center,
+//         ),
+//         Icon(
+//           Icons.check_circle,
+//           color: Colors.transparent,
+//         ),
+//       ],
+//     ),
+//   );
+// }
 }

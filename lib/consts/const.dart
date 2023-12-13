@@ -21,3 +21,4 @@ Color kStatusBar = Color(int.parse('0xFFFCFCFC'));
 Color kTitleSectionHeader = Color(int.parse('0xFFEFEFEF'));
 Color kIconButtonDefault = Color(int.parse('0xFF6F767E'));
 Color kBase30 = Color(int.parse('0xFFEFEFEF'));
+Color kHoverButton = Color(int.parse('0xFF1AAF74')).withOpacity(0.1);
