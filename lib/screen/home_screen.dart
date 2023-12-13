@@ -194,7 +194,7 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
                   loaded: (lis) => SizedBox(
                         height: SizeConfig.screenHeight * 0.8,
                         child: ReorderableListView(
-                          buildDefaultDragHandles: true,
+                          buildDefaultDragHandles: false,
                           proxyDecorator: proxyDecorator,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           children: <Widget>[
@@ -260,10 +260,13 @@ class _ReorderableListViewExampleState extends State<ReorderableExample> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(
-            Icons.drag_indicator,
-            color: icon1,
-            // color: kIconButtonDefault,
+          ReorderableDragStartListener(
+            index: index,
+            child: Icon(
+              Icons.drag_indicator,
+              color: icon1,
+              // color: kIconButtonDefault,
+            ),
           ),
           Text(
             "${listItems[index].name} ",
